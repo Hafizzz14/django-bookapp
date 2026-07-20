@@ -1,0 +1,14 @@
+<h2>Daftar Buku  - ({{ username }})</h2>
+<a href="{% url "book_create" %}">Tambah Buku</a> |
+<a href="{% url "info" %}">Info Session & Cookie</a> |
+<a href="{% url "logout" %}">Logout</a>
+<hr>
+<ul>
+    {% for book in books %}
+    <li>
+        {{ book.title }} - {{ book.author }} ({{ book.year }})
+        <a href="{% url "book_update" book.id %}">[Edit]</a>
+        <a href="{% url "book_delete" book.id %}">[Hapus]</a>
+    </li>
+    {% endfor %}
+</ul>
