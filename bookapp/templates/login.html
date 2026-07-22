@@ -1,9 +1,55 @@
-<h2>LOGIN SYSTEM</h2>
-{% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
-<form method="POST">
-    {% csrf_token %}
-    Username: <input type="text" name="username"><br><br>
-    Password: <input type="password" name="password"><br><br>
-    <input type="checkbox" name="remember"> Remember Username<br><br>
-    <button type="submit">Login</button>
-</form>
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center align-items-center" style="min-height:75vh;">
+    <div class="col-md-5 col-lg-4">
+        <div class="custom-card p-5">
+            <div class="text-center mb-4">
+                <i class="bi bi-book-half text-primary" style="font-size:60px;"></i>
+                <h2 class="fw-bold mt-3">BookVault</h2>
+                <p class="text-muted">Silakan login untuk melanjutkan</p>
+            </div>
+            {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+            {% endif %}
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input
+                        type="text"
+                        name="username"
+                        class="form-control"
+                        placeholder="Masukkan username"
+                        required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Masukkan password"
+                        required>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                    <label class="form-check-label" for="remember">
+                        Remember Username
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Login
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

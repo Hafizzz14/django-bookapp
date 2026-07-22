@@ -1,11 +1,31 @@
-# Django BookApp Project
+# BookApp - Django Library Management System
 
-Aplikasi pencatatan buku sederhana berbasis web yang dibangun menggunakan Python dan Django, dilengkapi dengan fitur:
-- Autentikasi Login (Session & Cookies)
-- Operasi CRUD (Create, Read, Update, Delete) Buku
-- Halaman Info Session & Cookie
+BookApp is a web-based library management application built using Django.
 
-## Cara Menjalankan:
-1. Pastikan Django sudah terinstal: `pip install django`
-2. Lakukan migrasi database: `python manage.py migrate`
-3. Jalankan server: `python manage.py runserver`
+## Features
+
+- User authentication using session
+- Cookie implementation
+- CRUD book management
+- Search functionality
+- Dashboard statistics
+- Pagination
+- Delete confirmation
+
+## Tech Stack
+
+- Python
+- Django
+- SQLite
+- Bootstrap 5
+- HTML/CSS
+
+## How to Run
+
+1. Clone repository
+
+2. Install requirements
+
+3. Run:
+
+python manage.py runserver

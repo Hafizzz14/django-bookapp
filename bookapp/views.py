@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.db.models import Max
+from django.core.paginator import Paginator
 from .models import Book
 from .forms import BookForm
 
@@ -31,13 +34,33 @@ def logout_view(request):
 
 # 2. Read (Daftar Buku)
 def book_list(request):
-    if not request.session.get('is_logged_in'): return redirect('login')
+    if not request.session.get('is_logged_in'): 
+        return redirect('login')
 
-    books = Book.objects.all()
-    request.session['last_page'] = 'book_list' # Menyimpan session info
+    query = request.GET.get('search')
 
-    response = render(request, 'book_list.html', {'books': books, 'username': request.session.get('username')})
-    response.set_cookie('visited', 'yes', max_age=3600) # Menyimpan cookie info
+    if query:
+        books = Book.objects.filter(title__icontains=query)
+    else:
+        books = Book.objects.all()
+
+    paginator = Paginator(books, 5)
+    page_number = request.GET.get('page')
+    books = paginator.get_page(page_number)
+    total_books = Book.objects.count()
+    latest_year = Book.objects.aggregate(
+        Max('year')
+    )['year__max']
+
+    request.session['last_page'] = 'book_list'
+    response = render(request, 'book_list.html', {
+        'books': books,
+        'username': request.session.get('username'),
+        'search': query,
+        'total_books': total_books,
+        'latest_year': latest_year
+    })
+    response.set_cookie('visited', 'yes', max_age=3600)
     return response
 
 # 3. Create (Tambah Buku)
@@ -47,6 +70,7 @@ def book_create(request):
     form = BookForm(request.POST or None)
     if form.is_valid():
         form.save()
+        messages.success(request, "Buku berhasil ditambahkan.")
         return redirect('book_list')
     return render(request, 'book_form.html', {'form': form, 'title': 'Tambah Buku'})
 
@@ -58,6 +82,7 @@ def book_update(request, id):
     form = BookForm(request.POST or None, instance=book)
     if form.is_valid():
         form.save()
+        messages.success(request, "Data buku berhasil diperbarui.")
         return redirect('book_list')
     return render(request, 'book_form.html', {'form': form, 'title': 'Edit Buku'})
 
@@ -68,12 +93,13 @@ def book_delete(request, id):
     book = get_object_or_404(Book, id=id)
     if request.method == 'POST':
         book.delete()
+        messages.success(request, "Buku berhasil dihapus.")
         return redirect('book_list')
     return render(request, 'book_delete.html', {'book': book})
 
 # 6. Info Session dan Cookie
 def info(request):
-    if not request.session.get('os_logged_in'): return redirect('login')
+    if not request.session.get('is_logged_in'): return redirect('login')
 
     last_page = request.session.get('last_page', 'Belum Ada')
     visited = request.COOKIES.get('visited', 'Belum Ada')
